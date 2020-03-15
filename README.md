@@ -14,5 +14,7 @@ Helper tool used to generate ansible documentation.
 * expand block tasks
 * can we parse tasks type?
 * parse role description from meta
+* fix fail on empty vars file
+* add ansible-vault support
 
 Thanks for inspiration to https://github.com/RcRonco/role2md

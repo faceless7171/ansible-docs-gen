@@ -24,7 +24,7 @@ def main(argv):
     types = ["defaults", "vars"]
 
     if os.path.exists(dest) and not force:
-        force_str = input("The output destination already exists are want to rewrite?(y/n)")
+        force_str = input("The output destination already exists do you want to rewrite?(y/n)")
         if force_str != 'y':
             exit(0)
 

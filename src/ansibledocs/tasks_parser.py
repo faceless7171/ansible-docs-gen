@@ -14,7 +14,11 @@ def get_tasks_file_vars(file_path):
                 task['when'] = f"{{{{ {task['when']} }}}}"
 
         # Parse the content of the template
-        parsed_content = Environment().parse(tasks)
+        environment = Environment()
+        environment.filters['bool'] = lambda: None
+        environment.filters['basename'] = lambda: None
+        environment.filters['regex_replace'] = lambda: None
+        parsed_content = environment.parse(tasks)
 
         # Get undeclared variable that in use
         task_vars = meta.find_undeclared_variables(parsed_content)
