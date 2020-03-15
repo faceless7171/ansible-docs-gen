@@ -1,0 +1,22 @@
+# Role: {{ role.name }}
+{% if role.description != "" %}
+{{ role.description }}
+{% else %}
+"Please fill description"
+{% endif %}
+
+{% if role.variables != {}  %}
+## Variables
+
+| Name    | Required | Vars/Defaults | Type   | Value | Description |
+|--------|--------|--------|--------|-----|-----|
+{%- for key, value in role.variables.items()|sort %}
+| {{ value.name }} | {{ value.required }} | {{ value.vars_defaults }} | {{ value.var_type }} | {{ value.value }} | {{ value.description }} |
+{%- endfor -%}
+
+{% endif %}
+
+## Tasks
+{%- for value in role.tasks %}
+* {{ value }}
+{%- endfor -%}

@@ -1,0 +1,14 @@
+---
+
+env:
+ RUNLEVEL: 1
+
+redhat_pkg:
+  - nginx
+
+# Test description
+ubuntu_pkg:
+  - python-selinux
+  - nginx
+
+  
