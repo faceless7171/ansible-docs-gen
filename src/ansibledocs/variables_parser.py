@@ -46,7 +46,20 @@ class VarsParser:
             # Open variables file
             with open(file_path, "r") as stream:
                 # Parse variables file with yaml parser
-                variables = yaml.safe_load(stream)
+                try:
+                  variables = yaml.safe_load(stream)
+                except:
+                  print(f"Error parsing '{file_path}'")
+                  return vars_dict
+
+                # Validation for 'vaulted', empty vars files
+                if type(variables) is str:
+                  print("File is 'vaulted'. Skipping")
+                  return vars_dict
+                elif variables is None:
+                  print("File is empty. Skipping")
+                  return vars_dict
+
                 stream.seek(0)
                 comments = self.__associate_comments(stream.read())
 

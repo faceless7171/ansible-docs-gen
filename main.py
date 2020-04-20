@@ -34,21 +34,21 @@ def main(argv):
     if os.path.exists(os.path.join(src, "tasks")):
         for path, _, files in os.walk(os.path.join(src, "tasks")):
             for file in files:
-                role.tasks, role.variables = parse_tasks((os.path.join(path, file)), role.tasks, role.variables)
                 print(f"Tasks: {os.path.join(path, file)}")
+                role.tasks, role.variables = parse_tasks((os.path.join(path, file)), role.tasks, role.variables)
 
     vars_parser = VarsParser()
     if os.path.exists(os.path.join(src, "defaults")):
         for path, _, files in os.walk(os.path.join(src, "defaults")):
             for file in files:
-                role.variables = vars_parser.parse((os.path.join(path, file)), types[0], role.variables)
                 print(f"Defaults: {os.path.join(path, file)}")
+                role.variables = vars_parser.parse((os.path.join(path, file)), types[0], role.variables)
 
     if os.path.exists(os.path.join(src, "vars")):
         for path, _, files in os.walk(os.path.join(src, "vars")):
             for file in files:
-                role.variables = vars_parser.parse((os.path.join(path, file)), types[1], role.variables)
                 print(f"Vars: {os.path.join(path, file)}")
+                role.variables = vars_parser.parse((os.path.join(path, file)), types[1], role.variables)
 
     role.variables = vars_parser.cleanup(role.variables)
     with open(dest, "w") as fd:

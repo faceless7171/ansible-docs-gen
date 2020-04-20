@@ -32,6 +32,7 @@ No description
 * Copy the nginx default site configuration file
 * Create the link for site enabled specific configurations
 * Create the configurations for sites
+* block test
 * Create the links to enable site configurations
 * start the nginx service
 * Name does't specified for task: {'file': "path=/etc/nginx/sites-enabled/{{ item['server']['file_name'] }} state=link src=/etc/nginx/sites-available/{{ item['server']['file_name'] }}", 'with_items': "{{ test == 'dfdf' }}", 'when': "nginx_sites|lower != 'none'", 'notify': ['reload nginx']}

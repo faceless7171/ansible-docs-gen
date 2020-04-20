@@ -29,6 +29,7 @@
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
   notify: 
    - restart nginx
+  delegate_to: localhost
 
 - name: Copy the nginx default configuration file 
   template: src=default.conf.j2 dest=/etc/nginx/conf.d/default.conf
@@ -37,12 +38,20 @@
   template: src=default.j2 dest=/etc/nginx/sites-available/default
 
 - name: Create the link for site enabled specific configurations
-  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default 
+  file: path=/etc/nginx/sites-enabled/default state=link src=/etc/nginx/sites-available/default
 
 - name: Create the configurations for sites
   template: src=site.j2 dest=/etc/nginx/sites-available/{{ item['server']['file_name'] }}
   with_items: nginx_sites
   when: nginx_sites|lower != 'none'
+
+- name: "block test"
+  block:
+    - name: "test"
+      service: name=nginx state=started enabled=yes
+
+    - name: "test1"
+      service: name=nginx state=started enabled=yes
 
 - name: Create the links to enable site configurations
   file: path=/etc/nginx/sites-enabled/{{ item['server']['file_name'] }} state=link src=/etc/nginx/sites-available/{{ item['server']['file_name'] }}

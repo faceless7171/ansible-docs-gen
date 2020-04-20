@@ -2,6 +2,12 @@ import yaml
 
 from .types import Variable
 from jinja2 import Environment, meta
+from ansible.plugins.filter.core import FilterModule
+from ansible.parsing.mod_args import ModuleArgsParser
+from ansible.utils.sentinel import Sentinel
+
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html
+custom_filters = FilterModule().filters()
 
 
 def get_tasks_file_vars(file_path):
@@ -13,11 +19,11 @@ def get_tasks_file_vars(file_path):
             if 'when' in task:
                 task['when'] = f"{{{{ {task['when']} }}}}"
 
-        # Parse the content of the template
         environment = Environment()
-        environment.filters['bool'] = lambda: None
-        environment.filters['basename'] = lambda: None
-        environment.filters['regex_replace'] = lambda: None
+        # Add dummy ansible jinja2 custom filters
+        for filter in custom_filters:
+            environment.filters[filter] = lambda: None
+        # Parse the content of the template
         parsed_content = environment.parse(tasks)
 
         # Get undeclared variable that in use
@@ -27,6 +33,19 @@ def get_tasks_file_vars(file_path):
             vars_dict[var] = Variable(var, required="Yes")
 
         return vars_dict
+
+def parse_task(task):
+  if 'block' in task:
+    print("BLOCK")
+    return 'block', '', ''
+  else:
+    (action, args, delegate_to) = ModuleArgsParser(task).parse(skip_action_validation=True)
+    if action in ('include', 'import_tasks', 'include_tasks'):
+      print("include task")
+    elif action in ('include_role', 'import_role'):
+      print("include role")
+
+    return action, args, ( delegate_to if delegate_to is not Sentinel else None)
 
 
 def parse_tasks(file_path, tasks_list, vars_dict):
@@ -39,6 +58,7 @@ def parse_tasks(file_path, tasks_list, vars_dict):
 
             # Run on tasks entry
             for task in tasks:
+                print(parse_task(task))           
                 if 'name' in task:
                     tasks_list.append(task['name'])
                 else:
